@@ -71,3 +71,35 @@ song_listeners_table_insert = ("""
         lastName)
     VALUES (%s, %s, %s, %s)
 """)
+
+
+# Select statements
+
+song_in_session_table_select = """
+    SELECT artist, song, length FROM song_in_session
+    WHERE sessionId = 338 AND itemInSession = 4
+"""
+
+user_songs_table_select = """
+    SELECT iteminsession, artist, song, firstname, lastname FROM user_songs
+    WHERE userId = 10 AND sessionId = 182
+"""
+
+song_listeners_table_select = """
+    SELECT firstName, lastName FROM song_listeners
+    WHERE song = 'All Hands Against His Own'
+"""
+
+
+# Query lists
+create_table_queries = [
+    song_in_session_table_create,
+    user_songs_table_create,
+    song_listeners_table_create
+]
+
+drop_table_queries = [
+    song_in_session_table_drop,
+    user_songs_table_drop,
+    song_listeners_table_drop
+]
