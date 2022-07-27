@@ -30,10 +30,44 @@ user_songs_table_create = ("""
 """)
 
 song_listeners_table_create = ("""
-        CREATE TABLE IF NOT EXISTS song_listeners (
+    CREATE TABLE IF NOT EXISTS song_listeners (
         song text,
         userId int,
         firstName text,
         lastName text,
         PRIMARY KEY (song, userId))
+""")
+
+
+# Insert records
+
+song_in_session_table_insert = ("""
+    INSERT INTO song_in_session (
+        sessionId,
+        itemInSession,
+        artist,
+        song,
+        length)
+    VALUES (%s, %s, %s, %s, %s)
+""")
+
+user_songs_table_insert = ("""
+    INSERT INTO user_songs (
+        userId,
+        sessionId,
+        itemInSession,
+        song,
+        artist,
+        firstName,
+        lastName)
+    VALUES (%s, %s, %s, %s, %s, %s, %s)
+""")
+
+song_listeners_table_insert = ("""
+    INSERT INTO song_listeners (
+        song,
+        userId,
+        firstName,
+        lastName)
+    VALUES (%s, %s, %s, %s)
 """)
