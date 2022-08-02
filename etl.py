@@ -1,9 +1,22 @@
 import os
 import glob
 import csv
-from cql_queries import *
+import sys
 from cassandra.cluster import Cluster
+from cql_queries import *
+import time
+from time import sleep
 
+PROGRESS_BAR_LENGTH = 30
+
+
+def display_bar(percent):
+    sys.stdout.write('\r')
+    sys.stdout.write("Completed: [{:{}}] {:>3}%"
+        .format('='*int(percent/(100.0/PROGRESS_BAR_LENGTH)),
+            PROGRESS_BAR_LENGTH, int(percent)))
+    sys.stdout.flush()
+    time.sleep(0.002)
 
 def prepare_data():
     # Get current folder and subfolder event data
@@ -34,9 +47,7 @@ def prepare_data():
     # Create a smaller event_datafile_full csv file that will be used to
     # insert data into the Apache Cassandra tables
     csv.register_dialect(
-        'myDialect',
-        quoting=csv.QUOTE_ALL,
-        skipinitialspace=True)
+        'myDialect', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 
     with open(
         'event_datafile_new.csv', 'w', encoding = 'utf8', newline='') as f:
@@ -73,7 +84,16 @@ def prepare_data():
 def process_data(session):
     file = 'event_datafile_new.csv'
 
+    line_counter = 0
+
+    with open(file, 'r', encoding = 'utf8') as f:
+        total_lines = sum(1 for line in f)
+    f.close()
+
     # Insert data in song_in_session table
+    print('Inserting data in song_in_session table...')
+    line_counter = 0
+
     with open(file, 'r', encoding = 'utf8') as f:
         csvreader = csv.reader(f)
         next(csvreader) # skip header
@@ -89,9 +109,16 @@ def process_data(session):
                         float(line[5])))
             except Exception as e:
                 print(e)
+
+            line_counter += 1
+            display_bar(100.0 * line_counter/(total_lines - 1))
+    print("\n")
     f.close()
 
     # Insert data in user_songs table
+    print('Inserting data in user_songs table...')
+    line_counter = 0
+
     with open(file, 'r', encoding = 'utf8') as f:
         csvreader = csv.reader(f)
         next(csvreader) # skip header
@@ -109,9 +136,16 @@ def process_data(session):
                         line[4]))
             except Exception as e:
                 print(e)
+
+            line_counter += 1
+            display_bar(100.0 * line_counter/(total_lines - 1))
+    print("\n")
     f.close()
 
     # Insert data in song_listeners table
+    print('Inserting data in song_listeners table...')
+    line_counter = 0
+
     with open(file, 'r', encoding = 'utf8') as f:
         csvreader = csv.reader(f)
         next(csvreader) # skip header
@@ -126,7 +160,98 @@ def process_data(session):
                         line[4]))
             except Exception as e:
                 print(e)
+
+            line_counter += 1
+            display_bar(100.0 * line_counter/(total_lines - 1))
+    print("\n")
     f.close()
+
+
+def process_data(session):
+    file = 'event_datafile_new.csv'
+
+    line_counter = 0
+
+    with open(file, 'r', encoding = 'utf8') as f:
+        total_lines = sum(1 for line in f)
+    f.close()
+
+    # Insert data in song_in_session table
+    print('Inserting data in song_in_session table...')
+    line_counter = 0
+
+    with open(file, 'r', encoding = 'utf8') as f:
+        csvreader = csv.reader(f)
+        next(csvreader) # skip header
+
+        for line in csvreader:
+            try:
+                session.execute(
+                    song_in_session_table_insert, (
+                        int(line[8]),
+                        int(line[3]),
+                        line[0],
+                        line[9],
+                        float(line[5])))
+            except Exception as e:
+                print(e)
+
+            line_counter += 1
+            display_bar(100.0 * line_counter/(total_lines - 1))
+    print("\n")
+    f.close()
+
+    # Insert data in user_songs table
+    print('Inserting data in user_songs table...')
+    line_counter = 0
+
+    with open(file, 'r', encoding = 'utf8') as f:
+        csvreader = csv.reader(f)
+        next(csvreader) # skip header
+
+        for line in csvreader:
+            try:
+                session.execute(
+                    user_songs_table_insert, (
+                        int(line[10]),
+                        int(line[8]),
+                        int(line[3]),
+                        line[9],
+                        line[0],
+                        line[1],
+                        line[4]))
+            except Exception as e:
+                print(e)
+
+            line_counter += 1
+            display_bar(100.0 * line_counter/(total_lines - 1))
+    print("\n")
+    f.close()
+
+    # Insert data in song_listeners table
+    print('Inserting data in song_listeners table...')
+    line_counter = 0
+
+    with open(file, 'r', encoding = 'utf8') as f:
+        csvreader = csv.reader(f)
+        next(csvreader) # skip header
+
+        for line in csvreader:
+            try:
+                session.execute(
+                    song_listeners_table_insert, (
+                        line[9],
+                        int(line[10]),
+                        line[1],
+                        line[4]))
+            except Exception as e:
+                print(e)
+
+            line_counter += 1
+            display_bar(100.0 * line_counter/(total_lines - 1))
+    print("\n")
+    f.close()
+
 
 def main():
     prepare_data()
