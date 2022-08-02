@@ -7,8 +7,58 @@ The project has the following goals:
  * Perform insert and select queries using [CQL](https://cassandra.apache.org/doc/latest/cassandra/cql/index.html)
  * Create ETL pipeline with Python
 ## Repo Contents
-The repo contains the ```event_data``` directory of csv files on user activity on the app, as well as the following files:
+The repo contains the ```event_data``` directory of CSV files on user activity on the app, as well as the following files:
  * ```cql_queries.py```: contains all CQL queries.
  * ```create_tables.py```: drops existing tables and creates new ones.
- * ```data_modeling_with_cassandra.ipynb```: reads and processes csv files from ```event_data```, loads the data into tables, and runs ```SELECT``` queries.
- * ```etl.py```:  creates ```event_datafile_full.csv``` file from csv files in ```event_data```, loads the data from this file into tables, and runs ```SELECT``` queries.
+ * ```data_modeling_with_cassandra.ipynb```: reads and processes CSV files from ```event_data```, loads the data into tables, and runs ```SELECT``` queries.
+ * ```etl.py```:  creates ```event_datafile_full.csv``` file from CSV files in ```event_data```, loads the data from this file into tables, and runs ```SELECT``` queries.
+## Apache Cassandra Database
+### Database Purpose
+A startup called *Sparkify* wants to analyze the data they've been collecting on songs and user activity on their new music streaming app. 
+
+The **music_app_data** database is designed to answer the following questions:
+ 1. Find the artist, song title and song's length in the music app history that was heard during sessionId = 338, and itemInSession = 4.
+ 2. Find only the following: name of artist, song (sorted by itemInSession) and user (first and last name) for userid = 10, sessionid = 182.
+ 3.  Find every user name (first and last) in my music app history who listened to the song *'All Hands Against His Own'*.
+ 
+### Data Description
+The ```event_data``` directory of CSV files partitioned by date. Here are examples of filepaths to two files in the dataset:
+```
+event_data/2018-11-08-events.csv
+event_data/2018-11-09-events.csv
+```
+Each CSV file in ```event_data``` directory contains data within the following columns:
+  * artist
+  * auth
+  * firstName
+  * gender
+  * itemInSession
+  * lastName
+  * length
+  * level
+  * location
+  * method
+  * page
+  * registration
+  * sessionId
+  * song
+  * status
+  * ts
+  * userId
+
+The ```event_datafile_new.csv``` file that will be used for Apache Cassandra tables has the following columns:
+  * artist
+  * firstName
+  * gender
+  * itemInSession
+  * lastName
+  * length
+  * level
+  * location
+  * sessionId
+  * song
+  * userId
+
+Below is an example of how the data in ```event_datafile_new.csv``` looks like.
+![image](https://user-images.githubusercontent.com/53233637/182494081-365123f5-2d5b-4a8a-9b44-185708f9cf3b.png)
+
