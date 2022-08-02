@@ -20,6 +20,14 @@ to the song 'All Hands Against His Own'."""
 
 
 def display_bar(percent):
+    """
+    Function to display progress bar.
+
+    Args:
+        percent(float): Current percent complete
+    Returns:
+        no value
+    """
     sys.stdout.write('\r')
     sys.stdout.write("Completed: [{:{}}] {:>3}%"
         .format('='*int(percent/(100.0/PROGRESS_BAR_LENGTH)),
@@ -29,6 +37,14 @@ def display_bar(percent):
 
 
 def prepare_data():
+    """
+    Function to create event_datafile_full.csv file from files in /event_data.
+
+    Args:
+        no value
+    Returns:
+        no value
+    """
     # Get current folder and subfolder event data
     filepath = os.getcwd() + '/event_data'
 
@@ -92,6 +108,14 @@ def prepare_data():
 
 
 def process_data(session):
+    """
+    Function to insert data in tables and to run select queries.
+
+    Args:
+        session(session): session connection a Cassandra cluster
+    Returns:
+        no value
+    """
     file = 'event_datafile_new.csv'
 
     line_counter = 0
@@ -177,7 +201,6 @@ def process_data(session):
     f.close()
 
     # Perform select queries
-
     print('Query 1:', QUERY_1)
     try:
         rows = session.execute(song_in_session_table_select)
