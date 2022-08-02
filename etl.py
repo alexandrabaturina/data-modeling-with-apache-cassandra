@@ -1,6 +1,8 @@
 import os
 import glob
 import csv
+from cql_queries import *
+from cassandra.cluster import Cluster
 
 
 def prepare_data():
@@ -67,8 +69,77 @@ def prepare_data():
                 row[13],
                 row[16]))
 
+
+def process_data(session):
+    file = 'event_datafile_new.csv'
+
+    # Insert data in song_in_session table
+    with open(file, 'r', encoding = 'utf8') as f:
+        csvreader = csv.reader(f)
+        next(csvreader) # skip header
+
+        for line in csvreader:
+            try:
+                session.execute(
+                    song_in_session_table_insert, (
+                        int(line[8]),
+                        int(line[3]),
+                        line[0],
+                        line[9],
+                        float(line[5])))
+            except Exception as e:
+                print(e)
+    f.close()
+
+    # Insert data in user_songs table
+    with open(file, 'r', encoding = 'utf8') as f:
+        csvreader = csv.reader(f)
+        next(csvreader) # skip header
+
+        for line in csvreader:
+            try:
+                session.execute(
+                    user_songs_table_insert, (
+                        int(line[10]),
+                        int(line[8]),
+                        int(line[3]),
+                        line[9],
+                        line[0],
+                        line[1],
+                        line[4]))
+            except Exception as e:
+                print(e)
+    f.close()
+
+    # Insert data in song_listeners table
+    with open(file, 'r', encoding = 'utf8') as f:
+        csvreader = csv.reader(f)
+        next(csvreader) # skip header
+
+        for line in csvreader:
+            try:
+                session.execute(
+                    song_listeners_table_insert, (
+                        line[9],
+                        int(line[10]),
+                        line[1],
+                        line[4]))
+            except Exception as e:
+                print(e)
+    f.close()
+
 def main():
     prepare_data()
+
+    cluster = Cluster(['127.0.0.1'])
+    # Create a session to establish connection and begin executing queries
+    session = cluster.connect()
+    session.set_keyspace('music_app_data')
+
+    process_data(session)
+
+    session.shutdown()
+    cluster.shutdown()
 
 
 if __name__ == "__main__":
