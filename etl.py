@@ -8,6 +8,15 @@ import time
 from time import sleep
 
 PROGRESS_BAR_LENGTH = 30
+QUERY_1 = """
+Find the artist, song title and song's length in the music app history
+that was heard during sessionId = 338, and itemInSession = 4."""
+QUERY_2 = """
+Find only the following: name of artist, song (sorted by itemInSession) and
+user (first and last name) for userid = 10, sessionid = 182."""
+QUERY_3 = """
+Find every user name (first and last) in my music app history who listened
+to the song 'All Hands Against His Own'."""
 
 
 def display_bar(percent):
@@ -17,6 +26,7 @@ def display_bar(percent):
             PROGRESS_BAR_LENGTH, int(percent)))
     sys.stdout.flush()
     time.sleep(0.002)
+
 
 def prepare_data():
     # Get current folder and subfolder event data
@@ -166,91 +176,46 @@ def process_data(session):
     print("\n")
     f.close()
 
+    # Perform select queries
 
-def process_data(session):
-    file = 'event_datafile_new.csv'
+    print('Query 1:', QUERY_1)
+    try:
+        rows = session.execute(song_in_session_table_select)
+    except Exception as e:
+        print(e)
 
-    line_counter = 0
+    if rows:
+        for row in rows:
+            print(row.artist, row.song, row.length)
+    else:
+        print('Nothing found.')
+    print('\n')
 
-    with open(file, 'r', encoding = 'utf8') as f:
-        total_lines = sum(1 for line in f)
-    f.close()
+    print('Query 2:', QUERY_2)
 
-    # Insert data in song_in_session table
-    print('Inserting data in song_in_session table...')
-    line_counter = 0
+    try:
+        rows = session.execute(user_songs_table_select)
+    except Exception as e:
+        print(e)
 
-    with open(file, 'r', encoding = 'utf8') as f:
-        csvreader = csv.reader(f)
-        next(csvreader) # skip header
+    if rows:
+        for row in rows:
+            print(row.iteminsession, row.artist, row.firstname, row.lastname)
+    else:
+        print('Nothing found.')
+    print('\n')
 
-        for line in csvreader:
-            try:
-                session.execute(
-                    song_in_session_table_insert, (
-                        int(line[8]),
-                        int(line[3]),
-                        line[0],
-                        line[9],
-                        float(line[5])))
-            except Exception as e:
-                print(e)
+    print('Query 3:', QUERY_3)
+    try:
+        rows = session.execute(song_listeners_table_select)
+    except Exception as e:
+        print(e)
 
-            line_counter += 1
-            display_bar(100.0 * line_counter/(total_lines - 1))
-    print("\n")
-    f.close()
-
-    # Insert data in user_songs table
-    print('Inserting data in user_songs table...')
-    line_counter = 0
-
-    with open(file, 'r', encoding = 'utf8') as f:
-        csvreader = csv.reader(f)
-        next(csvreader) # skip header
-
-        for line in csvreader:
-            try:
-                session.execute(
-                    user_songs_table_insert, (
-                        int(line[10]),
-                        int(line[8]),
-                        int(line[3]),
-                        line[9],
-                        line[0],
-                        line[1],
-                        line[4]))
-            except Exception as e:
-                print(e)
-
-            line_counter += 1
-            display_bar(100.0 * line_counter/(total_lines - 1))
-    print("\n")
-    f.close()
-
-    # Insert data in song_listeners table
-    print('Inserting data in song_listeners table...')
-    line_counter = 0
-
-    with open(file, 'r', encoding = 'utf8') as f:
-        csvreader = csv.reader(f)
-        next(csvreader) # skip header
-
-        for line in csvreader:
-            try:
-                session.execute(
-                    song_listeners_table_insert, (
-                        line[9],
-                        int(line[10]),
-                        line[1],
-                        line[4]))
-            except Exception as e:
-                print(e)
-
-            line_counter += 1
-            display_bar(100.0 * line_counter/(total_lines - 1))
-    print("\n")
-    f.close()
+    if rows:
+        for row in rows:
+            print(row.firstname, row.lastname)
+    else:
+        print('Nothing found.')
 
 
 def main():
@@ -265,7 +230,6 @@ def main():
 
     session.shutdown()
     cluster.shutdown()
-
 
 if __name__ == "__main__":
     main()
