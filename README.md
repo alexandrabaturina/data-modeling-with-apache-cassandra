@@ -61,4 +61,30 @@ The ```event_datafile_new.csv``` file that will be used for Apache Cassandra tab
 
 Below is an example of how the data in ```event_datafile_new.csv``` looks like.
 ![image](https://user-images.githubusercontent.com/53233637/182494081-365123f5-2d5b-4a8a-9b44-185708f9cf3b.png)
-
+## Database Design
+The **music_app_data** database is designed so that each table answers one question. It contains the following tables.
+### ```song_in_session```
+The ```song_in_session``` table has the following fields:
+  * sessionId: int
+  * itemInSession: int
+  * artist: text
+  * song: text
+  * length: float
+  * **PRIMARY KEY (sessionId, itemInSession)**
+### ```user_songs```
+The ```user_songs``` table has the following fields:
+ * userId: int
+ * sessionId: int
+ * itemInSession: int
+ * song: text
+ * artist: text
+ * firstName: text
+ * lastName: text
+ * **PRIMARY KEY (userId, sessionId, itemInSession))**
+### ```song_listeners```
+The ```song_listeners``` table has the following fields:
+ * song: text
+ * userId: int
+ * firstName: text
+ * lastName: text
+ * **PRIMARY KEY (song, userId))**
