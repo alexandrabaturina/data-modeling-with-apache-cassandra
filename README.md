@@ -88,3 +88,22 @@ The ```song_listeners``` table has the following fields:
  * firstName: text
  * lastName: text
  * **PRIMARY KEY (song, userId))**
+## Getting Started
+To run ETL pipeline locally,
+1. Clone this repo.
+2. ```cd``` into project directory.
+3. Run ```create_tables.py``` to reset tables:
+```
+python create_tables.py
+```
+> Remember to run ```create_tables.py``` every time before running ```etl.py``` to reset tables.
+4. Run ```etl.py```:
+```
+python etl.py
+```
+Once tables are created, query results are displayed.
+
+![image](https://user-images.githubusercontent.com/53233637/183332185-950202ae-f953-47b8-ab7a-0a2d29ed2af3.png)
+
+## Authors
+Alexandra Baturina
