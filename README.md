@@ -9,7 +9,7 @@ The project has the following goals:
 ## Dependencies
 * [Apache Cassandra](https://cassandra.apache.org/_/index.html)
 ## Repo Contents
-The repo contains the ```event_data``` directory of CSV files on user activity on the app, as well as the following files:
+The repo contains the ```event_data``` directory of CSV files on user activity on the app, the ```images``` directory with ```image_event_datafile_new.jpg``` reference file showing columns that will be used for Apache Cassandra tables, as well as the following files:
  * ```cql_queries.py```: contains all CQL queries.
  * ```create_tables.py```: drops existing tables and creates new ones.
  * ```data_modeling_with_cassandra.ipynb```: reads and processes CSV files from ```event_data```, loads the data into tables, and runs ```SELECT``` queries.
