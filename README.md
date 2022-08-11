@@ -6,6 +6,8 @@ The project has the following goals:
  * Model a NoSQL database with [Apache Cassandra](https://cassandra.apache.org/_/index.html)
  * Perform insert and select queries using [CQL](https://cassandra.apache.org/doc/latest/cassandra/cql/index.html)
  * Create ETL pipeline with Python
+## Dependencies
+* [Apache Cassandra](https://cassandra.apache.org/_/index.html)
 ## Repo Contents
 The repo contains the ```event_data``` directory of CSV files on user activity on the app, as well as the following files:
  * ```cql_queries.py```: contains all CQL queries.
@@ -136,7 +138,7 @@ Sara Johnson
 ```
 
 ## Authors
-Alexandra Baturina
+[Alexandra Baturina](https://www.linkedin.com/in/alexandrabaturina/)
 
 ## Acknowledgments
 Implementation of python progress bar is based on [this solution](https://gist.github.com/sibosutd/c1d9ef01d38630750a1d1fe05c367eb8).
