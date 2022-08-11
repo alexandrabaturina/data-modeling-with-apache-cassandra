@@ -94,16 +94,49 @@ To run ETL pipeline locally,
 2. ```cd``` into project directory.
 3. Run ```create_tables.py``` to reset tables:
 ```
-python create_tables.py
+root@8fa691392031:/home/workspace# python create_tables.py
+Tables are dropped.
+Tables are created.
 ```
 > Remember to run ```create_tables.py``` every time before running ```etl.py``` to reset tables.
-4. Run ```etl.py```:
+4. Run ```etl.py```. Once tables are creates, query results are displayed.
 ```
-python etl.py
-```
-Once tables are created, query results are displayed.
+root@8fa691392031:/home/workspace# python etl.py
+Total number of rows: 8056
+Inserting data in song_in_session table...
+Completed: [==============================] 100%
 
-![image](https://user-images.githubusercontent.com/53233637/183332185-950202ae-f953-47b8-ab7a-0a2d29ed2af3.png)
+Inserting data in user_songs table...
+Completed: [==============================] 100%
+
+Inserting data in song_listeners table...
+Completed: [==============================] 100%
+
+Query 1:
+Find the artist, song title and song's length in the music app history
+that was heard during sessionId = 338, and itemInSession = 4.
+Faithless Music Matters (Mark Knight Dub) 495.30731201171875
+
+
+Query 2:
+Find only the following: name of artist, song (sorted by itemInSession) and
+user (first and last name) for userid = 10, sessionid = 182.
+0 Down To The Bone Sylvie Cruz
+1 Three Drives Sylvie Cruz
+2 Sebastien Tellier Sylvie Cruz
+3 Lonnie Gordon Sylvie Cruz
+
+
+Query 3:
+Find every user name (first and last) in my music app history who listened
+to the song 'All Hands Against His Own'.
+Jacqueline Lynch
+Tegan Levine
+Sara Johnson
+```
 
 ## Authors
 Alexandra Baturina
+
+## Acknowledgments
+Implementation of python progress bar is based on [this solution](https://gist.github.com/sibosutd/c1d9ef01d38630750a1d1fe05c367eb8).
